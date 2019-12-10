@@ -1,9 +1,9 @@
 /**
  * \file
  *
- * \brief Application implement
+ * \brief Sleep related functionality implementation.
  *
- * Copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2014-2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -15,7 +15,7 @@
  * to your use of third party software (including open source software) that
  * may accompany Microchip software.
  *
- * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS".  NO WARRANTIES,
+ * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES,
  * WHETHER EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE,
  * INCLUDING ANY IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY,
  * AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL MICROCHIP BE
@@ -30,36 +30,44 @@
  * \asf_license_stop
  *
  */
-/*
- * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
+
+#include "hal_sleep.h"
+#include <hpl_sleep.h>
+
+/**
+ * \brief Driver version
  */
-#include <rtthread.h>
-#include <peripheral_clk_config.h>
-#include <utils.h>
-#include <hal_init.h>
-#include "atmel_start_pins.h"
+#define DRIVER_VERSION 0x00000001u
 
-int main(void)
+/**
+ * \brief Set the sleep mode of the device and put the MCU to sleep
+ *
+ * For an overview of which systems are disabled in sleep for the different
+ * sleep modes, see the data sheet.
+ *
+ * \param[in] mode Sleep mode to use
+ *
+ * \return The status of a sleep request
+ * \retval -1 The requested sleep mode was invalid or not available
+ * \retval  0 The operation completed successfully, returned after leaving the
+ *            sleep
+ */
+int sleep(const uint8_t mode)
 {
-	// GPIO on PA15
+	if (ERR_NONE != _set_sleep_mode(mode))
+		return ERR_INVALID_ARG;
 
-	gpio_set_pin_level(LED,
-	// <y> Initial level
-	// <id> pad_initial_level
-	// <false"> Low
-	// <true"> High
-	true);
+	_go_to_sleep();
 
-	// Set pin direction to output
-	gpio_set_pin_direction(LED, GPIO_DIRECTION_OUT);
+	return ERR_NONE;
+}
 
-	gpio_set_pin_function(LED, GPIO_PIN_FUNCTION_OFF);
-        
-	while(1)
-	{
-    	gpio_set_pin_level(LED, true);
-    	rt_thread_delay(RT_TICK_PER_SECOND);
-    	gpio_set_pin_level(LED, false);
-    	rt_thread_delay(RT_TICK_PER_SECOND);
-	}
+/**
+ * \brief Retrieve the current driver version
+ *
+ * \return Current driver version
+ */
+uint32_t sleep_get_version(void)
+{
+	return DRIVER_VERSION;
 }

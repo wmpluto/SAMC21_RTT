@@ -10,6 +10,7 @@
  */
  
 #include <stdint.h>
+#include "driver_init.h"
 #include <rthw.h>
 #include <rtthread.h>
 
@@ -28,6 +29,8 @@ extern void SystemCoreClockUpdate(void);
 // frequency supplied to the SysTick timer and the processor 
 // core clock.
 extern uint32_t SystemCoreClock;
+
+struct io_descriptor *io;
 
 static uint32_t _SysTick_Config(rt_uint32_t ticks)
 {
@@ -63,6 +66,8 @@ RT_WEAK void *rt_heap_end_get(void)
  */
 void rt_hw_board_init()
 {
+    system_init();
+    rt_hw_usart_init();
     /* System Clock Update */
     SystemCoreClockUpdate();
     
@@ -88,4 +93,44 @@ void SysTick_Handler(void)
 
     /* leave interrupt */
     rt_interrupt_leave();
+}
+
+
+void rt_hw_console_output(const char *str)
+{
+    rt_size_t i = 0, size = 0;
+    char a = '\r';
+    
+    size = rt_strlen(str);
+    for (i = 0; i < size; i++)
+    {
+        if (*(str + i) == '\n')
+        {
+            io_write(io, (uint8_t *)&a, 1);
+        }
+        io_write(io, (uint8_t *)(str + i),1);
+    }
+}
+
+int rt_hw_usart_init(void)
+{
+    TARGET_IO_init();
+        
+        usart_sync_get_io_descriptor(&TARGET_IO, &io);
+        usart_sync_enable(&TARGET_IO);
+    return 0;
+}
+
+char rt_hw_console_getchar(void)
+{
+    int ch = -1;
+    
+    if (_usart_sync_is_byte_received(SERCOM4))
+    {
+        ch = hri_sercomusart_read_DATA_reg(SERCOM4) & 0xff;
+    } else{
+        rt_thread_mdelay(10);
+    }
+    
+    return ch;
 }

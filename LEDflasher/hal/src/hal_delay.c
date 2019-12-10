@@ -1,9 +1,9 @@
 /**
  * \file
  *
- * \brief Application implement
+ * \brief HAL delay related functionality implementation.
  *
- * Copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2014-2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -15,7 +15,7 @@
  * to your use of third party software (including open source software) that
  * may accompany Microchip software.
  *
- * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS".  NO WARRANTIES,
+ * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES,
  * WHETHER EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE,
  * INCLUDING ANY IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY,
  * AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL MICROCHIP BE
@@ -30,36 +30,51 @@
  * \asf_license_stop
  *
  */
-/*
- * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
+
+#include <hpl_irq.h>
+#include <hpl_reset.h>
+#include <hpl_sleep.h>
+#include "hal_delay.h"
+#include <hpl_delay.h>
+
+/**
+ * \brief Driver version
  */
-#include <rtthread.h>
-#include <peripheral_clk_config.h>
-#include <utils.h>
-#include <hal_init.h>
-#include "atmel_start_pins.h"
+#define DRIVER_VERSION 0x00000001u
 
-int main(void)
+/**
+ * \brief The pointer to a hardware instance used by the driver.
+ */
+static void *hardware;
+
+/**
+ * \brief Initialize Delay driver
+ */
+void delay_init(void *const hw)
 {
-	// GPIO on PA15
+	_delay_init(hardware = hw);
+}
 
-	gpio_set_pin_level(LED,
-	// <y> Initial level
-	// <id> pad_initial_level
-	// <false"> Low
-	// <true"> High
-	true);
+/**
+ * \brief Perform delay in us
+ */
+void delay_us(const uint16_t us)
+{
+	_delay_cycles(hardware, _get_cycles_for_us(us));
+}
 
-	// Set pin direction to output
-	gpio_set_pin_direction(LED, GPIO_DIRECTION_OUT);
+/**
+ * \brief Perform delay in ms
+ */
+void delay_ms(const uint16_t ms)
+{
+	_delay_cycles(hardware, _get_cycles_for_ms(ms));
+}
 
-	gpio_set_pin_function(LED, GPIO_PIN_FUNCTION_OFF);
-        
-	while(1)
-	{
-    	gpio_set_pin_level(LED, true);
-    	rt_thread_delay(RT_TICK_PER_SECOND);
-    	gpio_set_pin_level(LED, false);
-    	rt_thread_delay(RT_TICK_PER_SECOND);
-	}
+/**
+ * \brief Retrieve the current driver version
+ */
+uint32_t delay_get_version(void)
+{
+	return DRIVER_VERSION;
 }

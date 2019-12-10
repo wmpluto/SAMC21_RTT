@@ -262,6 +262,7 @@ void rt_object_init(struct rt_object         *object,
         struct rt_object *obj;
 
         obj = rt_list_entry(node, struct rt_object, list);
+        (void) obj;
         RT_ASSERT(obj != object);
     }
     /* leave critical */

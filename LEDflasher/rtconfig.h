@@ -3,6 +3,8 @@
 #ifndef __RTTHREAD_CFG_H__
 #define __RTTHREAD_CFG_H__
 
+#define RT_USING_FINSH
+
 // <<< Use Configuration Wizard in Context Menu >>>
 // <h>Basic Configuration
 // <o>Maximal level of thread priority <8-256>
@@ -26,7 +28,7 @@
 
 // <o>the stack size of main thread<1-4086>
 //  <i>Default: 512
-#define RT_MAIN_THREAD_STACK_SIZE     256
+#define RT_MAIN_THREAD_STACK_SIZE     1024
 
 // </h>
 
@@ -59,7 +61,7 @@
 // <i> Enables user timers
 #define RT_USING_TIMER_SOFT         0
 #if RT_USING_TIMER_SOFT == 0
-    #undef RT_USING_TIMER_SOFT
+#undef RT_USING_TIMER_SOFT
 #endif
 // <o>The priority level of timer thread <0-31>
 //  <i>Default: 4
@@ -110,7 +112,7 @@
 // <h>Console Configuration
 // <c1>Using console
 //  <i>Using console
-//#define RT_USING_CONSOLE
+#define RT_USING_CONSOLE
 // </c>
 // <o>the buffer size of console <1-1024>
 //  <i>the buffer size of console
@@ -119,27 +121,26 @@
 // </h>
 
 
-#if defined(RTE_USING_FINSH)
-    #define RT_USING_FINSH
-    #define FINSH_USING_MSH
-    #define FINSH_USING_MSH_ONLY
-    // <h>Finsh Configuration
-    // <o>the priority of finsh thread <1-7>
-    //  <i>the priority of finsh thread
-    //  <i>Default: 6
-    #define __FINSH_THREAD_PRIORITY     5
-    #define FINSH_THREAD_PRIORITY       (RT_THREAD_PRIORITY_MAX / 8 * __FINSH_THREAD_PRIORITY + 1)
-    // <o>the stack of finsh thread <1-4096>
-    //  <i>the stack of finsh thread
-    //  <i>Default: 4096  (4096Byte)
-    #define FINSH_THREAD_STACK_SIZE     512
-    // <o>the history lines of finsh thread <1-32>
-    //  <i>the history lines of finsh thread
-    //  <i>Default: 5
-    #define FINSH_HISTORY_LINES         1
+#if defined(RT_USING_FINSH)
+#define FINSH_USING_MSH
+#define FINSH_USING_MSH_ONLY
+// <h>Finsh Configuration
+// <o>the priority of finsh thread <1-7>
+//  <i>the priority of finsh thread
+//  <i>Default: 6
+#define __FINSH_THREAD_PRIORITY     5
+#define FINSH_THREAD_PRIORITY       (RT_THREAD_PRIORITY_MAX / 8 * __FINSH_THREAD_PRIORITY + 1)
+// <o>the stack of finsh thread <1-4096>
+//  <i>the stack of finsh thread
+//  <i>Default: 4096  (4096Byte)
+#define FINSH_THREAD_STACK_SIZE     1024
+// <o>the history lines of finsh thread <1-32>
+//  <i>the history lines of finsh thread
+//  <i>Default: 5
+#define FINSH_HISTORY_LINES         1
 
-    #define FINSH_USING_SYMTAB
-    // </h>
+#define FINSH_USING_SYMTAB
+// </h>
 #endif
 
 // <<< end of configuration section >>>

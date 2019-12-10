@@ -1,7 +1,7 @@
 /**
  * \file
  *
- * \brief Application implement
+ * \brief I/O functionality implementation.
  *
  * Copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
  *
@@ -15,7 +15,7 @@
  * to your use of third party software (including open source software) that
  * may accompany Microchip software.
  *
- * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS".  NO WARRANTIES,
+ * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES,
  * WHETHER EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE,
  * INCLUDING ANY IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY,
  * AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL MICROCHIP BE
@@ -30,36 +30,34 @@
  * \asf_license_stop
  *
  */
-/*
- * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
+
+#include <hal_io.h>
+#include <utils_assert.h>
+
+/**
+ * \brief Driver version
  */
-#include <rtthread.h>
-#include <peripheral_clk_config.h>
-#include <utils.h>
-#include <hal_init.h>
-#include "atmel_start_pins.h"
+#define DRIVER_VERSION 0x00000001u
 
-int main(void)
+uint32_t io_get_version(void)
 {
-	// GPIO on PA15
+	return DRIVER_VERSION;
+}
 
-	gpio_set_pin_level(LED,
-	// <y> Initial level
-	// <id> pad_initial_level
-	// <false"> Low
-	// <true"> High
-	true);
+/**
+ * \brief I/O write interface
+ */
+int32_t io_write(struct io_descriptor *const io_descr, const uint8_t *const buf, const uint16_t length)
+{
+	ASSERT(io_descr && buf);
+	return io_descr->write(io_descr, buf, length);
+}
 
-	// Set pin direction to output
-	gpio_set_pin_direction(LED, GPIO_DIRECTION_OUT);
-
-	gpio_set_pin_function(LED, GPIO_PIN_FUNCTION_OFF);
-        
-	while(1)
-	{
-    	gpio_set_pin_level(LED, true);
-    	rt_thread_delay(RT_TICK_PER_SECOND);
-    	gpio_set_pin_level(LED, false);
-    	rt_thread_delay(RT_TICK_PER_SECOND);
-	}
+/**
+ * \brief I/O read interface
+ */
+int32_t io_read(struct io_descriptor *const io_descr, uint8_t *const buf, const uint16_t length)
+{
+	ASSERT(io_descr && buf);
+	return io_descr->read(io_descr, buf, length);
 }
