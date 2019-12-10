@@ -1,7 +1,7 @@
 /**
  * \file
  *
- * \brief Application implement
+ * \brief SAM Main Clock.
  *
  * Copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
  *
@@ -15,7 +15,7 @@
  * to your use of third party software (including open source software) that
  * may accompany Microchip software.
  *
- * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS".  NO WARRANTIES,
+ * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES,
  * WHETHER EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE,
  * INCLUDING ANY IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY,
  * AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL MICROCHIP BE
@@ -30,19 +30,15 @@
  * \asf_license_stop
  *
  */
-/*
- * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
+
+#include <compiler.h>
+#include <hpl_mclk_config.h>
+
+/**
+ * \brief Initialize master clock generator
  */
-
-#include <hal_gpio.h>
-#include <rtthread.h>
-#include "atmel_start_pins.h"
-
-int main(void)
-{	
-	while (1)
-	{
-		gpio_toggle_pin_level(LED);
-		rt_thread_mdelay(1000);
-	}
+void _mclk_init(void)
+{
+	void *hw = (void *)MCLK;
+	hri_mclk_write_CPUDIV_reg(hw, MCLK_CPUDIV_CPUDIV(CONF_MCLK_CPUDIV));
 }

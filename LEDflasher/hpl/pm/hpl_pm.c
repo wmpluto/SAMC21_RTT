@@ -1,9 +1,10 @@
+
 /**
  * \file
  *
- * \brief Application implement
+ * \brief SAM Power manager
  *
- * Copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2014-2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -15,7 +16,7 @@
  * to your use of third party software (including open source software) that
  * may accompany Microchip software.
  *
- * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS".  NO WARRANTIES,
+ * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES,
  * WHETHER EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE,
  * INCLUDING ANY IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY,
  * AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL MICROCHIP BE
@@ -30,19 +31,34 @@
  * \asf_license_stop
  *
  */
-/*
- * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
+
+#include <hpl_sleep.h>
+#include <hpl_reset.h>
+#include <hpl_init.h>
+
+/**
+ * \brief Retrieve the reset reason
  */
+enum reset_reason _get_reset_reason(void)
+{
+	return (enum reset_reason)hri_rstc_read_RCAUSE_reg(RSTC);
+}
 
-#include <hal_gpio.h>
-#include <rtthread.h>
-#include "atmel_start_pins.h"
-
-int main(void)
-{	
-	while (1)
-	{
-		gpio_toggle_pin_level(LED);
-		rt_thread_mdelay(1000);
+/**
+ * \brief Set the sleep mode for the device
+ */
+int32_t _set_sleep_mode(const uint8_t mode)
+{
+	switch (mode) {
+	case 2: /* IDLE */
+	case 4: /* STANDBY */
+	case 5: /* BACKUP */
+	case 6: /* OFF */
+		hri_pm_write_SLEEPCFG_SLEEPMODE_bf(PM, mode);
+		break;
+	default:
+		return ERR_INVALID_ARG;
 	}
+
+	return ERR_NONE;
 }

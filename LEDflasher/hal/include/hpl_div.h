@@ -1,7 +1,7 @@
 /**
  * \file
  *
- * \brief Application implement
+ * \brief Division operation related functionality declaration.
  *
  * Copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
  *
@@ -15,7 +15,7 @@
  * to your use of third party software (including open source software) that
  * may accompany Microchip software.
  *
- * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS".  NO WARRANTIES,
+ * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES,
  * WHETHER EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE,
  * INCLUDING ANY IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY,
  * AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL MICROCHIP BE
@@ -30,19 +30,30 @@
  * \asf_license_stop
  *
  */
-/*
- * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
+
+#ifndef _HPL_DIV_H_INCLUDED
+#define _HPL_DIV_H_INCLUDED
+
+/**
+ * \addtogroup HPL Div
+ *
+ * \section hpl_div_rev Revision History
+ * - v1.0.0 Initial Release
+ *
+ *@{
  */
 
-#include <hal_gpio.h>
-#include <rtthread.h>
-#include "atmel_start_pins.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-int main(void)
-{	
-	while (1)
-	{
-		gpio_toggle_pin_level(LED);
-		rt_thread_mdelay(1000);
-	}
+/**
+ * \brief Initialize hardware for division operation
+ */
+void _div_init(void);
+
+#ifdef __cplusplus
 }
+#endif
+/**@}*/
+#endif /* _HPL_DIV_H_INCLUDED */

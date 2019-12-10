@@ -1,7 +1,7 @@
 /**
  * \file
  *
- * \brief Application implement
+ * \brief Common SPI related functionality declaration.
  *
  * Copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
  *
@@ -15,7 +15,7 @@
  * to your use of third party software (including open source software) that
  * may accompany Microchip software.
  *
- * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS".  NO WARRANTIES,
+ * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES,
  * WHETHER EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE,
  * INCLUDING ANY IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY,
  * AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL MICROCHIP BE
@@ -30,19 +30,41 @@
  * \asf_license_stop
  *
  */
-/*
- * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
+
+#ifndef _HPL_SPI_SYNC_H_INCLUDED
+#define _HPL_SPI_SYNC_H_INCLUDED
+
+#include <compiler.h>
+#include <utils.h>
+
+#include <hpl_spi.h>
+
+/**
+ * \addtogroup hpl_spi HPL SPI
+ *
+ * \section hpl_spi_rev Revision History
+ * - v1.0.0 Initial Release
+ *
+ *@{
  */
 
-#include <hal_gpio.h>
-#include <rtthread.h>
-#include "atmel_start_pins.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-int main(void)
-{	
-	while (1)
-	{
-		gpio_toggle_pin_level(LED);
-		rt_thread_mdelay(1000);
-	}
+/** SPI driver to support sync HAL */
+struct _spi_sync_dev {
+	/** Pointer to the hardware base or private data for special device. */
+	void *prvt;
+	/** Data size, number of bytes for each character */
+	uint8_t char_size;
+	/** Dummy byte used in master mode when reading the slave */
+	uint16_t dummy_byte;
+};
+
+#ifdef __cplusplus
 }
+#endif
+
+/**@}*/
+#endif /* ifndef _HPL_SPI_SYNC_H_INCLUDED */

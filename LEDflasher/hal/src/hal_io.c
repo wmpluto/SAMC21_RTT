@@ -1,7 +1,7 @@
 /**
  * \file
  *
- * \brief Application implement
+ * \brief I/O functionality implementation.
  *
  * Copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
  *
@@ -15,7 +15,7 @@
  * to your use of third party software (including open source software) that
  * may accompany Microchip software.
  *
- * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS".  NO WARRANTIES,
+ * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES,
  * WHETHER EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE,
  * INCLUDING ANY IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY,
  * AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL MICROCHIP BE
@@ -30,19 +30,34 @@
  * \asf_license_stop
  *
  */
-/*
- * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
+
+#include <hal_io.h>
+#include <utils_assert.h>
+
+/**
+ * \brief Driver version
  */
+#define DRIVER_VERSION 0x00000001u
 
-#include <hal_gpio.h>
-#include <rtthread.h>
-#include "atmel_start_pins.h"
+uint32_t io_get_version(void)
+{
+	return DRIVER_VERSION;
+}
 
-int main(void)
-{	
-	while (1)
-	{
-		gpio_toggle_pin_level(LED);
-		rt_thread_mdelay(1000);
-	}
+/**
+ * \brief I/O write interface
+ */
+int32_t io_write(struct io_descriptor *const io_descr, const uint8_t *const buf, const uint16_t length)
+{
+	ASSERT(io_descr && buf);
+	return io_descr->write(io_descr, buf, length);
+}
+
+/**
+ * \brief I/O read interface
+ */
+int32_t io_read(struct io_descriptor *const io_descr, uint8_t *const buf, const uint16_t length)
+{
+	ASSERT(io_descr && buf);
+	return io_descr->read(io_descr, buf, length);
 }
